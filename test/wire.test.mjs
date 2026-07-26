@@ -119,12 +119,13 @@ test('reports a missing file instead of throwing', () => {
 test('the wired file still parses as JavaScript', async () => {
   const dir = tmp({ 'package.json': JSON.stringify({ type: 'module' }), 'server.js': ESM_APP });
   commitWiring(dir, wireExpress(dir, 'server.js'));
-  const source = fs.readFileSync(path.join(dir, 'server.js'), 'utf8');
-  // new Function cannot hold import statements, so check via a real parse
+  // Parse it for real. Written as .mjs so Node infers the module type from
+  // the extension — `--input-type=module` with stdin is not portable across
+  // the Node versions this package supports.
+  const probe = path.join(dir, 'probe.mjs');
+  fs.copyFileSync(path.join(dir, 'server.js'), probe);
   const { execFileSync } = await import('node:child_process');
-  execFileSync(process.execPath, ['--input-type=module', '--check'], {
-    input: source,
-  });
+  execFileSync(process.execPath, ['--check', probe]);
 });
 
 test('every runtime that can be wired ships a snippet', () => {

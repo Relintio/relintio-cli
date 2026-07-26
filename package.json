@@ -52,7 +52,7 @@
     "access": "public"
   },
   "scripts": {
-    "test": "node --test \"test/**/*.test.mjs\"",
+    "test": "node --test",
     "smoke": "node bin/relintio.mjs --version && node bin/relintio.mjs --help"
   }
 }
