@@ -1,0 +1,58 @@
+{
+  "name": "relintio",
+  "version": "1.0.0",
+  "description": "Install and verify Relintio application protection in any project. Detects your runtime, installs the right agent SDK, wires the middleware, and confirms the license is live.",
+  "type": "module",
+  "license": "SEE LICENSE IN LICENSE",
+  "author": {
+    "name": "Relintio",
+    "url": "https://relintio.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Relintio/Relintio.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://relintio.com/docs",
+  "bugs": {
+    "url": "https://github.com/Relintio/relintio-cli/issues"
+  },
+  "funding": {
+    "type": "commercial",
+    "url": "https://relintio.com/pricing"
+  },
+  "keywords": [
+    "relintio",
+    "waf",
+    "security",
+    "bot-detection",
+    "bot-mitigation",
+    "cli",
+    "init",
+    "scaffold",
+    "middleware",
+    "threat-protection"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "bin": {
+    "relintio": "bin/relintio.mjs"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "assets/",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "node --test \"test/**/*.test.mjs\"",
+    "smoke": "node bin/relintio.mjs --version && node bin/relintio.mjs --help"
+  }
+}
