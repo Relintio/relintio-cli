@@ -1,6 +1,6 @@
 {
   "name": "relintio",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Install and verify Relintio application protection in any project. Detects your runtime, installs the right agent SDK, wires the middleware, and confirms the license is live.",
   "type": "module",
   "license": "SEE LICENSE IN LICENSE",
@@ -10,8 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Relintio/Relintio.git",
-    "directory": "packages/cli"
+    "url": "git+https://github.com/Relintio/relintio-cli.git"
   },
   "homepage": "https://relintio.com/docs",
   "bugs": {

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.1
+
+- Point `repository` at the public `Relintio/relintio-cli` mirror instead of the private monorepo. npm resolves relative README image paths against this field, so the previous value produced a dead Repository link and a broken logo on the package page.
+- Use an absolute URL for the README logo so it renders wherever the README is syndicated.
+- Run the test suite with bare `node --test`. Passing a glob is a semver-major feature added in Node 21 and never backported to 20, so CI failed on Node 18 and 20.
+- Syntax-check wired output from a `.mjs` file rather than `--input-type=module` on stdin, which is not portable across supported Node versions.
+
 ## 1.0.0
 
 First release.

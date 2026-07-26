@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./assets/relintio-logo.svg" alt="Relintio" width="260">
+  <img src="https://raw.githubusercontent.com/Relintio/relintio-cli/main/assets/relintio-logo.svg" alt="Relintio" width="260">
 
   <h1>relintio</h1>
 
