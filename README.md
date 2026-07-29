@@ -53,7 +53,7 @@ Or install it globally:
 npm install -g relintio
 ```
 
-Node 18 or newer, on the machine running the command. Your *project* can be in any of the twelve supported runtimes; Node is only needed to run the installer itself. Zero runtime dependencies.
+Node 18 or newer, on the machine running the command. Your *project* can be in any of the supported runtimes; Node is only needed to run the installer itself. Zero runtime dependencies.
 
 ## Usage
 

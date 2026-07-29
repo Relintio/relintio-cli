@@ -25,17 +25,144 @@ app.use(ultimateProtectorExpress({
 }));
 `,
   },
+  // Browser runtimes take a publishable key and nothing else. This snippet
+  // used to paste `licenseKey={import.meta.env.VITE_UP_LICENSE_KEY}` into an
+  // app root — a bundler inlines that, so every visitor received the HMAC key
+  // that signs challenge passports. The provider now refuses anything that
+  // does not begin `pk_`, but the snippet is what people actually copy.
   react: {
     file: 'your app root',
     code: `import { RelintioProvider } from '@relintio/react-agent';
 
+const config = {
+  publishableKey: import.meta.env.VITE_RELINTIO_PUBLISHABLE_KEY, // pk_live_…
+  apiUrl: process.env.UP_API_URL,
+};
+
 export default function App({ children }) {
-  return (
-    <RelintioProvider licenseKey={import.meta.env.VITE_UP_LICENSE_KEY}>
-      {children}
-    </RelintioProvider>
-  );
+  return <RelintioProvider config={config}>{children}</RelintioProvider>;
 }
+`,
+  },
+  vue: {
+    file: 'src/main.ts',
+    code: `import { createApp } from 'vue';
+import { relintio } from '@relintio/vue-agent';
+import App from './App.vue';
+
+createApp(App)
+  .use(relintio, {
+    publishableKey: import.meta.env.VITE_RELINTIO_PUBLISHABLE_KEY,
+    apiUrl: process.env.UP_API_URL,
+  })
+  .mount('#app');
+`,
+  },
+  svelte: {
+    file: 'src/routes/+layout.svelte',
+    code: `<script lang="ts">
+  import { onDestroy } from 'svelte';
+  import { createRelintio } from '@relintio/svelte-agent';
+
+  const relintio = createRelintio({
+    publishableKey: import.meta.env.VITE_RELINTIO_PUBLISHABLE_KEY,
+  });
+
+  onDestroy(() => relintio.destroy());
+</script>
+`,
+  },
+  angular: {
+    file: 'src/main.ts',
+    code: `import { bootstrapApplication } from '@angular/platform-browser';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideRelintio, relintioInterceptor } from '@relintio/angular-agent';
+
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideRelintio({ publishableKey: environment.relintioPublishableKey }),
+    provideHttpClient(withInterceptors([relintioInterceptor])),
+  ],
+});
+`,
+  },
+  expo: {
+    file: 'relintio.ts',
+    code: `import { Platform } from 'react-native';
+import { createRelintio } from '@relintio/expo-agent';
+
+// domain is required on native: there is no location.hostname to read.
+export const relintio = createRelintio({
+  publishableKey: process.env.EXPO_PUBLIC_RELINTIO_KEY,
+  domain: 'api.example.com',
+  environment: { platform: Platform.OS, platformVersion: Platform.Version },
+});
+`,
+  },
+  express: {
+    file: 'your server entry file',
+    code: `import express from 'express';
+import { relintio } from '@relintio/express';
+
+const app = express();
+
+// Before your routes and before any body parser: enforcement that runs after
+// a 40MB upload has been read has let the request cost what it was going to.
+app.use(relintio({
+  licenseKey: process.env.UP_LICENSE_KEY,
+  apiUrl: process.env.UP_API_URL,
+  onError: (error, req) => console.error('[relintio]', req.originalUrl, error),
+}));
+
+app.use(express.json());
+`,
+  },
+  nuxt: {
+    file: 'nuxt.config.ts',
+    code: `export default defineNuxtConfig({
+  modules: ['@relintio/nuxt'],
+  relintio: {
+    // Two keys, one each side. Swapping them is refused at build time.
+    licenseKey: process.env.RELINTIO_LICENSE_KEY,
+    publishableKey: process.env.RELINTIO_PUBLISHABLE_KEY,
+  },
+});
+`,
+  },
+  vercel: {
+    file: 'middleware.js',
+    code: `import { relintio } from '@relintio/vercel';
+
+export const config = {
+  matcher: '/((?!_next/static|_next/image|favicon.ico).*)',
+};
+
+export default relintio();
+`,
+  },
+  supabase: {
+    file: 'supabase/functions/<name>/index.ts',
+    code: `import { withRelintio } from 'jsr:@relintio/supabase';
+
+Deno.serve(withRelintio(async (request) => {
+  return new Response(JSON.stringify({ ok: true }), {
+    headers: { 'Content-Type': 'application/json' },
+  });
+}));
+`,
+  },
+  firebase: {
+    file: 'functions/index.js',
+    code: `const { onRequest } = require('firebase-functions/v2/https');
+const { createAgent, withRelintio } = require('@relintio/firebase');
+
+// One agent shared across exports: one ruleset fetch, one set of buckets.
+const agent = createAgent();
+
+exports.api = onRequest(
+  { secrets: ['RELINTIO_LICENSE_KEY'] },
+  withRelintio(async (req, res) => { res.send('protected'); }, { agent }),
+);
 `,
   },
   python: {
